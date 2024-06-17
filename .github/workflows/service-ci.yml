@@ -1,0 +1,71 @@
+name: service CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, labeled, unlabeled, synchronize]
+    paths:
+      - "apps/service/**"
+      - "packages/db/**"
+      - "packages/utils/**"
+      - ".github/workflows/service-ci.yml"
+      - "package.json"
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  BETA_DATABASE_URL: ${{ secrets.BETA_DATABASE_URL }}
+  ADMIN_ID: ${{ secrets.ADMIN_ID }}
+  BETA_ADMIN_ID: ${{ secrets.BETA_ADMIN_ID }}
+  SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+  SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+  SPOTIFY_REDIRECT_URI: http://localhost:3003
+  REDIS_URI: ${{ secrets.REDIS_URI }}
+  REDIS_URL: ${{ secrets.REDIS_URL }}
+  ENV: beta
+  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+  AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+  AUTH_URL: http://localhost:3003
+  NODE_VERSION: 20
+  PNPM_VERSION: 9.3.0
+  TURBO_TELEMETRY_DISABLED: 1
+
+jobs:
+  build:
+    name: Build and Test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'area:service') || contains(github.event.pull_request.labels.*.name, 'service:enhancement') || contains(github.event.pull_request.labels.*.name, 'area-service') }}
+
+    steps:
+      - name: "🐙️ Check out code"
+        uses: actions/checkout@v4
+
+      - name: "💽️  Init"
+        id: backend-init
+        uses: Chia1104/chia-stack/.github/actions/init-pnpm@main
+        with:
+          NODE_VERSION: ${{ env.NODE_VERSION }}
+          PNPM_VERSION: ${{ env.PNPM_VERSION }}
+
+      - name: "📦  Install"
+        id: backend-install
+        uses: Chia1104/chia-stack/.github/actions/pnpm-install@main
+
+      - name: "🏗️  Build"
+        uses: Chia1104/chia-stack/.github/actions/pnpm-build@main
+        with:
+          BUILD_COMMAND: "build --filter service..."
+          TURBO_TEAM: ${{ env.TURBO_TEAM }}
+          TURBO_TOKEN: ${{ env.TURBO_TOKEN }}
+
+      - name: "🚨️  ESLint, Type checking, Unit tests"
+        id: backend-lint-test
+        uses: Chia1104/chia-stack/.github/actions/lint-test@main
+        with:
+          COMMAND: "--filter service..."
+          TURBO_TEAM: ${{ env.TURBO_TEAM }}
+          TURBO_TOKEN: ${{ env.TURBO_TOKEN }}

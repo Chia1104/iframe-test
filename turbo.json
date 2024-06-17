@@ -1,0 +1,130 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "www#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "dash#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "service#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": ["DATABASE_URL"]
+    },
+    "lint": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "lint:fix": {
+      "cache": false
+    },
+    "type:check": {
+      "cache": true
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "cache": true
+    },
+    "test:watch": {
+      "outputs": []
+    },
+    "test:cov": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "cache": true
+    },
+    "test:debug": {
+      "outputs": []
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:turbo": {
+      "cache": false,
+      "persistent": true
+    },
+    "start": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**", "playwright-report/**"],
+      "cache": true
+    },
+    "next-sitemap": {
+      "dependsOn": ["^build"],
+      "outputs": ["public/**"],
+      "cache": false
+    },
+    "db:seed": {
+      "cache": false
+    },
+    "db:studio": {
+      "cache": false
+    },
+    "service-graph": {}
+  },
+  "globalEnv": [
+    "BASE_URL",
+    "SITE_URL",
+    "HOST",
+    "PORT",
+    "NODE_ENV",
+    "ANALYZE",
+    "CI",
+    "SKIP_ENV_VALIDATION",
+    "VERCEL",
+    "ZEABUR_URL",
+    "VERCEL_URL",
+    "RAILWAY_STATIC_URL",
+    "RAILWAY_PUBLIC_DOMAIN",
+    "REDIS_URI",
+    "REDIS_URL",
+    "DB_URL",
+    "DATABASE_URL",
+    "*_DATABASE_URL",
+    "ADMIN_ID",
+    "*_ADMIN_ID",
+    "GITHUB_API",
+    "GITHUB_GRAPHQL_API",
+    "GH_PUBLIC_TOKEN",
+    "GOOGLE_API",
+    "SPOTIFY_NOW_PLAYING_URL",
+    "SPOTIFY_TOKEN_URL",
+    "EDGE_CONFIG",
+    "NEXT_PUBLIC_SENTRY_DSN",
+    "SENTRY_AUTH_TOKEN",
+    "SENTRY_ORG",
+    "SENTRY_PROJECT",
+    "NEXT_PUBLIC_VERCEL_ENV",
+    "RAILWAY_ENVIRONMENT_NAME",
+    "ZEABUR_ENVIRONMENT_NAME",
+    "VERCEL_ENV",
+    "*_VERCEL_ENV",
+    "ENV",
+    "*_ENV",
+    "OPENAI_API_KEY",
+    "HUGGINGFACE_API_KEY",
+    "GITHUB_CLIENT_ID",
+    "GITHUB_CLIENT_SECRET",
+    "NEXT_RUNTIME",
+    "SPOTIFY_CLIENT_ID",
+    "SPOTIFY_CLIENT_SECRET",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "AUTH_SECRET"
+  ]
+}
