@@ -1,6 +1,6 @@
 ARG NODE_VERSION=20
 
-FROM --platform=linux/amd64 node:${NODE_VERSION}-alpine AS base
+FROM node:${NODE_VERSION}-alpine AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -27,7 +27,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prefer-offline
 
 RUN pnpm build:bar
 
-FROM --platform=linux/amd64 nginx:mainline-alpine
+FROM nginx:mainline-alpine
 ENV CSP_FRAME_ANCESTORS_HOSTS=https://iframe-turbo-foo.zeabur.app
 COPY --chown=root:root ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --chown=root:root ./docker/nginx/templates/ /etc/nginx/templates
